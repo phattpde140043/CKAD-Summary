@@ -6,6 +6,10 @@ Notes ôn tập cho kỳ thi Certified Kubernetes Application Developer (CKAD).
 
 Phần tóm tắt dưới đây lấy từ video course CKAD của Sander van Vugt.
 
+**Course materials:** [github.com/sandervanvugt/ckad](https://github.com/sandervanvugt/ckad.git) —
+repo chính thức của khóa, chứa lab files, Dockerfile demo, và script cài môi trường
+(`minikube-docker-setup.sh`); clone một lần ở đầu khóa (xem Lab 1.0).
+
 **Về chứng chỉ CKAD:**
 
 - CKAD (Certified Kubernetes Application Developer) chứng minh kỹ năng **chạy ứng dụng trên Kubernetes cluster có sẵn** — không cần tự xây dựng cluster
@@ -17,7 +21,7 @@ Phần tóm tắt dưới đây lấy từ video course CKAD của Sander van Vu
 | Module | Nội dung |
 |--------|----------|
 | 1 | [Container Fundamentals](ckad/01-container-fundamentals/): Containers, Container Images, Kubernetes là gì, Deployment Options & Lab |
-| 2 | Kubernetes thiết yếu: lab environment, Pod, Storage |
+| 2 | [Kubernetes Essentials](ckad/02-kubernetes-essentials/): lab environment, Pod, Storage |
 | 3 | Triển khai ứng dụng (Application Deployment) |
 | 4 | Services & Networking: Ingress, Gateway API |
 | 5 | Cấu hình môi trường & Security: ConfigMaps, Secrets, làm việc với API |
