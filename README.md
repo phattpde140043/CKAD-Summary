@@ -22,7 +22,7 @@ repo chính thức của khóa, chứa lab files, Dockerfile demo, và script c�
 |--------|----------|
 | 1 | [Container Fundamentals](ckad/01-container-fundamentals/): Containers, Container Images, Kubernetes là gì, Deployment Options & Lab |
 | 2 | [Kubernetes Essentials](ckad/02-kubernetes-essentials/): lab environment, Pod, Storage |
-| 3 | Triển khai ứng dụng (Application Deployment) |
+| 3 | [Application Deployment](ckad/03-application-deployment/): Deployments, scalability, updates, StatefulSet, DaemonSet, cài đặt ứng dụng |
 | 4 | Services & Networking: Ingress, Gateway API |
 | 5 | Cấu hình môi trường & Security: ConfigMaps, Secrets, làm việc với API |
 | 6 | Observability & Maintenance: troubleshooting |
@@ -65,3 +65,6 @@ Nguồn: [CNCF curriculum](https://github.com/cncf/curriculum/tree/master/ckad) 
 Mỗi file chủ đề có một section cho từng competency chính thức, kèm checklist
 khái niệm then chốt. Thêm notes trực tiếp dưới mục checklist tương ứng; đánh dấu
 khi đã nắm vững.
+
+Toàn bộ notes được biên soạn theo [WRITING_GUIDELINES.md](WRITING_GUIDELINES.md) —
+quy ước ngôn ngữ, cấu trúc bài học, marker nguồn và format labs.
