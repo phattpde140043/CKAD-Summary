@@ -165,8 +165,8 @@ pod IP mặc định của Minikube.)*
 - **Điểm dễ hiểu nhầm nhất:** `restartPolicy: Always` **không ảnh hưởng state
   của cả pod** — pod bị stopped/killed thì **không** được restart. Nghĩ "Always
   sẽ restart pod của tôi" là sai.
-- Muốn pod được thay thế khi fail → đưa vào **Deployment** — đó là cách duy
-  nhất.
+- Muốn pod được thay thế khi fail → đưa vào **Deployment** (phổ biến nhất cho
+  stateless app; StatefulSet/DaemonSet cũng thay thế pod khi fail).
 
 ### Demo 1 — restartPolicy không cứu pod bị delete
 
@@ -212,7 +212,8 @@ Podman và `grep`.)*
 ### Khái niệm
 
 - Job chạy pod với **`restartPolicy: Never`** — ý tưởng: **chạy đúng một lần**
-  rồi kết thúc (runs to completion).
+  rồi kết thúc (runs to completion). Job cũng chấp nhận `OnFailure`, chỉ cấm
+  `Always` *(bổ sung từ nghiên cứu ngoài video)*.
 - Muốn pod chạy đến hoàn thành → dùng **job**, không dùng pod thường.
 - Job hữu ích cho **one-shot tasks**: backup, calculation, batch processing...
 - Nên set **`spec.ttlSecondsAfterFinished`** (vd 60): thiếu nó job **không tự
@@ -375,8 +376,10 @@ kubectl get all               # service "kubernetes" đã tự xuất hiện l�
 
 - `kubectl delete all` thiếu `--all` → không resource nào được chỉ định →
   không xóa gì.
-- `--all` xóa sạch namespace hiện tại, kể cả service `kubernetes` — essential
-  service của Kubernetes, nhưng **tự động được tạo lại**.
+- `--all` xóa mọi resource thuộc **nhóm `all`** trong namespace hiện tại, kể
+  cả service `kubernetes` — essential service của Kubernetes, nhưng **tự động
+  được tạo lại** *(bổ sung từ nghiên cứu ngoài video: nhóm `all` không gồm
+  ConfigMap, Secret, PVC — những resource này phải xóa riêng)*.
 - **Tuyệt đối không thêm `-A`:** xóa trên **mọi namespace** — kéo theo cả
   **system resources**. Trong demo tác giả gõ tới đó rồi nhấn **Ctrl+U** để
   xóa sạch dòng lệnh và không chạy.

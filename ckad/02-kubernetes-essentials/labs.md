@@ -197,3 +197,4 @@ thực hành kèm tiêu chí verify. Mục tiêu: làm tới khi không cần nh
 - [ ] `kubectl cp -h` — **Verify:** ghi chú **requires tar**; example copy `/tmp/foo` local → `/tmp/bar` trong remote pod
 - [ ] `kubectl cp /etc/hosts lab7pod:/data`
 - [ ] Verify cuối: `kubectl describe pv lab7pv` → hostPath `/storage`; `minikube ssh` → `ls -l /storage` — **Verify:** thấy file `hosts` — proof lab hoàn thành
+- Ghi nhớ: access mode là **khai báo**, không đảm bảo năng lực thật của storage — hostPath không share được giữa nhiều node; RWX ở lab này chạy được vì Minikube chỉ có 1 node *(bổ sung từ nghiên cứu ngoài video)*

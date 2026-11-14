@@ -215,7 +215,9 @@ practice trước để trên kỳ thi lấy được example nhanh. Copy exampl
 | `spec.hostPath.path` | `/mnt/data` | Storage type thực — directory trên host |
 
 Ba **access modes**: `ReadWriteOnce` (common & pretty safe), `ReadOnlyMany`,
-`ReadWriteMany`.
+`ReadWriteMany`. Lưu ý "Once" trong `ReadWriteOnce` tính theo **node** —
+nhiều pod trên cùng node vẫn dùng chung volume; K8s ≥ 1.29 thêm
+`ReadWriteOncePod` (đúng một pod) *(bổ sung từ nghiên cứu ngoài video)*.
 
 ```bash
 kubectl explain persistentvolume.spec | less

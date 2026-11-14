@@ -19,7 +19,11 @@ chế, một mối quan hệ hoặc một cách áp dụng. Không viết chỉ 
 - **Đi thẳng vào vấn đề** — không mở đầu bằng câu chung chung. Câu ngắn, **mỗi câu một ý**.
 - Tách câu khi một câu chứa ≥3 tầng thông tin (vd: định nghĩa + hệ quả + lý do học gộp chung).
 - Mũi tên `→` chỉ dùng cho **chuỗi quan hệ ngắn (tối đa 3 mắt xích)**. Cơ chế cần nhiều hơn
-  2 câu giải thích → viết thành đoạn văn.
+  2 câu giải thích → viết thành đoạn văn. Phân biệt ngữ nghĩa: `→` cho nhân-quả, luồng
+  xử lý hoặc ánh xạ lựa chọn rõ ràng; quan hệ có **điều kiện/ngoại lệ** → viết thành câu;
+  dùng `≠` khi phân biệt hai khái niệm.
+- **Tiết kiệm từ nhấn mạnh** ("bản chất", "mấu chốt", "quan trọng nhất", "thực sự") — mỗi
+  phần chỉ nhấn đúng trọng tâm, không lặp lại để giữ sức nhấn.
 - **Hạn chế từ tuyệt đối hóa** ("không bao giờ", "hoàn toàn", "chỉ") — dùng khi đúng kỹ thuật
   và kèm lý do ngay sau đó.
 - Khẩu ngữ gần gũi ("không phải khoa học tên lửa") chỉ dùng trong **ghi chú kinh nghiệm /
@@ -57,6 +61,9 @@ Marker bắt buộc — nội dung không đến trực tiếp từ video phải
 
 - Transcript thường duplicated 2–5 lần kèm nhiễu UI → lọc bỏ âm thầm, chỉ xử lý một lần.
 - Forward/backward reference dùng **có chủ đích** — không ghi chú khi mối liên hệ đã hiển nhiên.
+- Phân biệt **3 loại nội dung**: kiến thức kỹ thuật (điều gì xảy ra) / kinh nghiệm thực
+  hành (cách làm hiệu quả) / mẹo thi (cách hoàn thành task nhanh). Mẹo thi đặt trong
+  blockquote `> **Ghi nhớ thi CKAD**` — không trộn với quy tắc kỹ thuật.
 
 ## 4. Bảng, bullet, đoạn văn
 

@@ -76,7 +76,7 @@ Output rất dài nên pipe qua `less` — thấy các properties có thể set:
 
 | Nhược điểm | Ý nghĩa |
 |---|---|
-| Không reschedule khi fail | Có sự cố với pod → pod **không** được restart |
+| Không reschedule khi fail | **Node fail** → pod không được reschedule; container crash thì kubelet **vẫn restart** theo `restartPolicy` |
 | Không update strategy | Rolling update **không áp dụng** — chỉ bring down rồi bring up với setting mới → user đang connect sẽ bị downtime |
 | Không scale | Pod thứ 2 là standalone pod **độc lập hoàn toàn** — không phải scale out |
 | Không tự replace | Cluster không tự thay thế pod |
@@ -265,8 +265,11 @@ kubectl get pods multi-container
 
 ### Namespace là gì
 
-- Kubernetes namespace resource **tận dụng Linux kernel namespaces** để cung
-  cấp **resource isolation**.
+- Kubernetes namespace là **cluster resource** — chia cluster thành các
+  **virtual cluster** riêng, cung cấp **resource isolation** giữa các tenant
+  *(bổ sung từ nghiên cứu ngoài video: K8s namespace là cách tổ chức tài
+  nguyên ở cấp API, không dùng Linux kernel namespaces — Linux namespaces là
+  cơ chế isolate container trong pod; trùng tên nhưng khác bản chất)*.
 - Các namespace khác nhau giúp **tách strict tài nguyên của từng customer** →
   enable **multi-tenancy**.
 - Namespace cũng là nơi **apply security-related settings**: **RBAC**
