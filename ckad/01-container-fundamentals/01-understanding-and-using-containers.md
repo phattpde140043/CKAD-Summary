@@ -232,7 +232,7 @@ Quản lý container bằng Docker/podman **không nằm trong phạm vi đề C
 - `docker stop web` → dừng đúng cách; sau đó `docker ps -a` thấy web "Exited ... seconds ago"
 - `docker start web` → chạy lại container đã dừng
 - `docker inspect web` → hiện "code behind the container": Path (file thực thi), Args (lệnh thật sự được chạy), toàn bộ thuộc tính Linux của container
-- `docker kill` = cắt đứt ngay lập tức, không có gì được đóng đàng hoàng. **Không dùng tay lệnh này**: `docker stop` cho container vài giây để dừng tử tế; nếu không dừng được thì kill được phát tự động — nhưng ít nhất container đã có cơ hội đóng các file đang mở
+- `docker kill` = gửi **SIGKILL** — cắt đứt ngay lập tức, không có gì được đóng đàng hoàng. **Không dùng tay lệnh này**: `docker stop` gửi **SIGTERM** để container dừng tử tế; hết grace period (mặc định 10 giây) mà container vẫn chạy thì SIGKILL được phát tự động — nhưng ít nhất container đã có cơ hội đóng các file đang mở *(tên tín hiệu SIGTERM/SIGKILL bổ sung từ nghiên cứu ngoài video)*
 
 ## Phần 5 — Container logs
 
