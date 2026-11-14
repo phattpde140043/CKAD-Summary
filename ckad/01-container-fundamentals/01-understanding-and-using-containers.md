@@ -16,7 +16,7 @@ là những gì cần biết khi làm việc với container trong môi trườn
 **Định nghĩa:**
 
 - Container cung cấp một cách chạy ứng dụng hoàn toàn cô lập (**isolation**). systemd vốn cũng chạy được ứng dụng, nhưng điểm mới của container là isolation toàn phần
-- Để cung cấp khả năng cô lập này, Linux sử dụng tính năng Namespaces của kernel. Namespace là một tính năng của Linux kernel cho phép chạy một ứng dụng trong môi trường độc lập, không thể truy cập hoặc nhìn thấy những gì các ứng dụng khác đang thực hiện.
+- Để cung cấp khả năng cô lập này, Linux sử dụng tính năng Namespaces của kernel. Namespace cho phép một ứng dụng chạy với **góc nhìn riêng (view)** về tài nguyên hệ thống — không nhìn thấy tiến trình/tài nguyên của ứng dụng khác. Namespaces **không phải cơ chế cô lập duy nhất** — isolation đầy đủ còn cần **cgroups** (giới hạn CPU/RAM), **capabilities** (quyền) *(bổ sung từ nghiên cứu ngoài video — xem bảng runtime dưới đây)*
 - Container đóng gói **toàn bộ dependencies** của ứng dụng bên trong namespace
 - Container khởi chạy từ **image**, image thường lấy từ **registry**. Image được chuẩn hóa cao → dùng giống nhau trên máy standalone lẫn cloud (lý do học container trước Kubernetes)
 
@@ -25,7 +25,8 @@ là những gì cần biết khi làm việc với container trong môi trườn
 | Thành phần | Vai trò |
 |---|---|
 | **Container runtime** | Chương trình khởi chạy container (analog: systemd khởi chạy app → runtime khởi chạy container) |
-| **Container engine** (thuật ngữ chính thức; tác giả gọi là *container manager*) | Quản lý container, nằm **trên** runtime. Standalone: **Docker**, **podman**. Cloud: **Kubernetes** |
+| **Container engine** (thuật ngữ chính thức; tác giả gọi là *container manager*) | Quản lý container, nằm **trên** runtime — standalone: **Docker**, **podman** |
+| **Container orchestrator** | Danh mục cao hơn engine: quản lý container trên toàn cluster — cloud: **Kubernetes** *(bổ sung từ nghiên cứu ngoài video: tách khỏi hàng engine để tránh hiểu Kubernetes là container engine như Docker/podman)* |
 | **runc** | Phần lõi trung tâm — nhiệm vụ duy nhất: chạy container image. Cùng một runc + cùng một image chạy được cả ở máy local lẫn cloud |
 
 - Kubernetes làm nhiều hơn việc chạy container → còn được gọi là **container orchestrator**
@@ -37,7 +38,7 @@ là những gì cần biết khi làm việc với container trong môi trườn
             runc            ← runtime: chạy image thành container
               │
    ┌──────────┴──────────┐
- Docker / Podman      Kubernetes   ← engine: quản lý container
+ Docker / Podman      Kubernetes   ← quản lý container (engine / orchestrator)
  (standalone)         (cloud — orchestrator)
 ```
 
@@ -139,9 +140,9 @@ build → push → registry (lưu theo repository + tag) → pull → run
 
 ## Phần 3 — Khởi tạo và quản lý container
 
-**Lệnh khởi chạy container phụ thuộc vào container engine:**
+**Lệnh khởi chạy container phụ thuộc vào công cụ quản lý:**
 
-| Engine | Lệnh | Ghi chú |
+| Công cụ | Lệnh | Ghi chú |
 |---|---|---|
 | **Docker** | `docker run nginx` | Chỉ cần tên image — Docker mặc định lấy image từ Docker Hub |
 | **podman** | `podman run docker.io/library/nginx` | Bắt buộc dùng **FQCN** — podman không mặc định registry nào |
