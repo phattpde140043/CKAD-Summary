@@ -1,26 +1,54 @@
 # CKAD Summary — Certified Kubernetes Application Developer
 
-Study notes for the CNCF Certified Kubernetes Application Developer exam. Topic files mirror
-the official curriculum structure; knowledge content is filled in per topic over time.
+Notes ôn tập cho kỳ thi Certified Kubernetes Application Developer (CKAD).
 
-## Exam Overview
+## Giới thiệu khóa học (Sander van Vugt)
 
-| Item | Detail |
+Phần tóm tắt dưới đây lấy từ video course CKAD của Sander van Vugt.
+
+**Về chứng chỉ CKAD:**
+
+- CKAD (Certified Kubernetes Application Developer) chứng minh kỹ năng **chạy ứng dụng trên Kubernetes cluster có sẵn** — không cần tự xây dựng cluster
+- Tác giả nhận định CKAD thực chất nên gọi là "Application Deployer": tập trung vào chạy pod, deployment, đảm bảo ứng dụng **scalable** và **available**
+- Phân biệt các chứng chỉ: **KCNA** (entry-level, trắc nghiệm) → **CKAD** và **CKA** (chứng chỉ cốt lõi, thực hành)
+
+**Cấu trúc khóa học (7 module):**
+
+| Module | Nội dung |
+|--------|----------|
+| 1 | [Container Fundamentals](ckad/01-container-fundamentals/): Containers, Container Images, Kubernetes là gì, Deployment Options & Lab |
+| 2 | Kubernetes thiết yếu: lab environment, Pod, Storage |
+| 3 | Triển khai ứng dụng (Application Deployment) |
+| 4 | Services & Networking: Ingress, Gateway API |
+| 5 | Cấu hình môi trường & Security: ConfigMaps, Secrets, làm việc với API |
+| 6 | Observability & Maintenance: troubleshooting |
+| 7 | Sample exam — kèm **script chấm điểm pass/fail** để tự đánh giá trước khi thi thật |
+
+**Điểm nổi bật:** Mỗi bài học đều có demo + lab exercise kèm lời giải.
+
+**Về tác giả:** Sander van Vugt (Hà Lan) — chuyên gia Linux/Kubernetes/Ansible,
+tác giả nhiều best-seller như *Getting Started with Kubernetes*, *Linux Under
+the Hood*, đồng thời founder của Living Open Source Foundation (tổ chức phi lợi
+nhuận dạy open source miễn phí ở châu Phi).
+
+## Tổng quan kỳ thi
+
+| Hạng mục | Chi tiết |
 |---|---|
-| Duration | 2 hours |
-| Format | Online, proctored, performance-based — hands-on tasks in a command line |
-| Kubernetes version | v1.37 |
-| Attempts | 2 exam attempts + 2 killer.sh simulator sessions (17 questions each) |
-| Validity | 2 years |
-| Prerequisites | None |
-| Price | $445 (exam only) |
+| Thời lượng | 2 giờ |
+| Hình thức | Online, giám sát trực tuyến, thực hành trực tiếp trên command line |
+| Phiên bản Kubernetes | v1.37 |
+| Số lần thi | 2 lần thi + 2 phiên killer.sh simulator (17 câu mỗi phiên) |
+| Hiệu lực | 2 năm |
+| Điều kiện tiên quyết | Không |
+| Chi phí | $445 (chỉ kỳ thi) |
 
-Sources: [CNCF curriculum](https://github.com/cncf/curriculum/tree/master/ckad) ·
-[Linux Foundation exam page](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/) — verified 2026-11-10.
+Nguồn: [CNCF curriculum](https://github.com/cncf/curriculum/tree/master/ckad) ·
+[Linux Foundation exam page](https://training.linuxfoundation.org/certification/certified-kubernetes-application-developer-ckad/) — xác nhận 2026-11-10.
 
-## Domains & Weighting
+## Miền kiến thức & trọng số
 
-| # | Topic | Weight |
+| # | Chủ đề | Trọng số |
 |---|---|---|
 | 1 | [Application Design and Build](01-application-design-and-build.md) | 20% |
 | 2 | [Application Deployment](02-application-deployment.md) | 20% |
@@ -28,7 +56,8 @@ Sources: [CNCF curriculum](https://github.com/cncf/curriculum/tree/master/ckad) 
 | 4 | [Application Environment, Configuration and Security](04-application-environment-configuration-security.md) | 25% |
 | 5 | [Services and Networking](05-services-and-networking.md) | 20% |
 
-## How to Use
+## Cách sử dụng
 
-Each topic file has one section per official competency, with a key-concept checklist.
-Add notes directly under the relevant checklist items; tick items as you master them.
+Mỗi file chủ đề có một section cho từng competency chính thức, kèm checklist
+khái niệm then chốt. Thêm notes trực tiếp dưới mục checklist tương ứng; đánh dấu
+khi đã nắm vững.
