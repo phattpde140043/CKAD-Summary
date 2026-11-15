@@ -25,7 +25,7 @@ repo chính thức của khóa, chứa lab files, Dockerfile demo, và script c�
 | 3 | [Application Deployment](ckad/03-application-deployment/): Deployments, scalability, updates, StatefulSet, DaemonSet, cài đặt ứng dụng |
 | 4 | [Services & Networking](ckad/04-services-networking/): Services, DNS, NetworkPolicy, Ingress, Gateway API |
 | 5 | [Cấu hình môi trường & Security](ckad/05-application-environment-configuration-security/): ConfigMaps, Secrets, làm việc với API |
-| 6 | Observability & Maintenance: troubleshooting |
+| 6 | [Observability & Maintenance](ckad/06-observability-maintenance/): troubleshooting, observability |
 | 7 | Sample exam — kèm **script chấm điểm pass/fail** để tự đánh giá trước khi thi thật |
 
 **Điểm nổi bật:** Mỗi bài học đều có demo + lab exercise kèm lời giải.
