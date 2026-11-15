@@ -23,7 +23,7 @@ repo chính thức của khóa, chứa lab files, Dockerfile demo, và script c�
 | 1 | [Container Fundamentals](ckad/01-container-fundamentals/): Containers, Container Images, Kubernetes là gì, Deployment Options & Lab |
 | 2 | [Kubernetes Essentials](ckad/02-kubernetes-essentials/): lab environment, Pod, Storage |
 | 3 | [Application Deployment](ckad/03-application-deployment/): Deployments, scalability, updates, StatefulSet, DaemonSet, cài đặt ứng dụng |
-| 4 | Services & Networking: Ingress, Gateway API |
+| 4 | [Services & Networking](ckad/04-services-networking/): Services, DNS, NetworkPolicy, Ingress, Gateway API |
 | 5 | Cấu hình môi trường & Security: ConfigMaps, Secrets, làm việc với API |
 | 6 | Observability & Maintenance: troubleshooting |
 | 7 | Sample exam — kèm **script chấm điểm pass/fail** để tự đánh giá trước khi thi thật |
