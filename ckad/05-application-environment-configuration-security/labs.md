@@ -386,3 +386,217 @@ kubectl get crds
 
 **Ghi nhớ:** CRD chỉ định nghĩa resource — muốn "có tác dụng thật" cần
 application tiêu thụ nó (như ingress controller dùng Ingress resources).
+
+### Lab 14.5 — Working With the API (end-of-lesson lab)
+
+- [ ] Tìm mọi resource trên hệ thống đã được định nghĩa bằng custom resource
+      definitions:
+
+```bash
+kubectl api-resources | grep -i custom
+kubectl get crds
+```
+
+**Verify:** thấy resource customresourcedefinitions (shortname crd/crds);
+`kubectl get crds` liệt kê mọi CRD hiện có trong cluster.
+
+**Ghi nhớ:** `kubectl api-resources` liệt kê resource *types* (kể cả bản
+thân CRD); `kubectl get crds` liệt kê *các định nghĩa CRD đang tồn tại* —
+lệnh trực tiếp nhất cho câu hỏi này.
+
+## Bài 15
+
+### Lab 15.1 — kubectl auth can-i (demo Phần 1)
+
+- [ ] Kiểm tra quyền của mình và của một user không tồn tại:
+
+```bash
+kubectl auth can-i get pods
+kubectl auth can-i get pods --as=bob@example.com
+```
+
+**Verify:** câu đầu yes; câu sau no — user không tồn tại thì không có
+authorization nào diễn ra.
+
+**Ghi nhớ:** `--as=<user>` hoặc `--as=system:serviceaccount:<ns>:<sa>` test
+quyền của một danh tính khác.
+
+### Lab 15.2 — default service account và kube-system (demo Phần 2)
+
+- [ ] Pod nào cũng mang service account — xem bất kỳ pod đang chạy:
+
+```bash
+kubectl describe pod <pod-bất-kỳ>        # gần đầu: Service Account: default
+kubectl get sa                           # default namespace: chỉ có default
+kubectl get sa -n kube-system            # nhiều SA của system components
+kubectl describe pod coredns-<suffix> -n kube-system
+```
+
+**Verify:** pod thường dùng SA default; pod coredns dùng SA coredns.
+
+**Ghi nhớ:** mỗi namespace sinh ra đã có sẵn SA default — đủ cho đa số pod;
+CoreDNS cần SA riêng vì phải communicate với pods để cung cấp DNS.
+
+### Lab 15.3 — RBAC: role + service account + role binding (demo Phần 3)
+
+- [ ] Tạo đủ chuỗi RBAC trong namespace riêng:
+
+```bash
+kubectl create ns bellview
+kubectl create role viewer --verb=get --verb=list --verb=watch \
+  --resource=pods -n bellview
+kubectl create sa viewer -n bellview
+kubectl create rolebinding viewer --serviceaccount=bellview:viewer \
+  --role=viewer -n bellview
+```
+
+- [ ] Gắn SA vào deployment:
+
+```bash
+kubectl create deploy viewginx --image=nginx --replicas=3 -n bellview
+kubectl set serviceaccount deploy/viewginx viewer -n bellview
+```
+
+- [ ] Verify quyền của SA:
+
+```bash
+kubectl auth can-i get pods \
+  --as=system:serviceaccount:bellview:viewer -n bellview
+kubectl auth can-i get pods \
+  --as=system:serviceaccount:bellview:viewer -n default
+```
+
+**Verify:** bellview → yes; default → no (role có namespace scope).
+
+- [ ] Dọn dẹp: `kubectl delete ns bellview`
+
+**Ghi nhớ:** tên SA trong rolebinding viết dạng `<namespace>:<tên-sa>` —
+được phép dùng SA từ namespace khác; test danh tính SA bằng
+`--as=system:serviceaccount:<ns>:<sa>`.
+
+### Lab 15.4 — ClusterRole/ClusterRoleBinding qua CoreDNS (demo Phần 3)
+
+- [ ] Soi chuỗi quyền của CoreDNS:
+
+```bash
+kubectl describe sa coredns -n kube-system
+kubectl describe clusterrolebinding system:coredns
+kubectl describe clusterrole system:coredns
+```
+
+**Verify:** rolebinding ghi RoleRef kind ClusterRole + Subjects là SA
+coredns; clusterrole liệt kê verbs trong PolicyRules.
+
+**Ghi nhớ:** SA tự thân gần như trống — quyền nằm ở (cluster) role binding
+nối nó với role; hệ thống cần access toàn cluster thì dùng ClusterRole +
+ClusterRoleBinding.
+
+### Lab 15.5 — Security context: runAsUser/runAsGroup/fsGroup (demo Phần 4)
+
+Prereq: file security-context-demo-2.yaml (course Git repo / K8s docs).
+
+- [ ] Apply pod có securityContext ở cả pod lẫn container level, rồi vào
+      shell pod:
+
+```bash
+kubectl apply -f security-context-demo-2.yaml
+kubectl exec -it security-context-demo -- sh
+```
+
+- [ ] Trong shell của pod:
+
+```bash
+ps                                   # processes chạy với user ID 1000
+cd /data && ls -l                    # demo: owner root, group 2000
+cd demo && echo hello > testfile && ls -l
+```
+
+**Verify:** process của user 1000; file mới owned user 1000 + group 2000
+(fsGroup) — không phải primary group 3000 (runAsGroup).
+
+**Ghi nhớ:** fsGroup đặt group mặc định cho file mới tạo trong container;
+`allowPrivilegeEscalation: false` cấm sudo từ trong container.
+
+- [ ] Dọn dẹp: `kubectl delete -f security-context-demo-2.yaml`
+
+### Lab 15.6 — runAsNonRoot xung đột với image chạy root (demo Phần 4)
+
+- [ ] Apply pod nginx-secure với `runAsNonRoot: true`:
+
+```bash
+kubectl apply -f security-context-demo.yaml
+kubectl get pods
+kubectl describe pod nginx-secure
+```
+
+**Verify:** status CreateContainerConfigError; event báo container có
+runAsNonRoot nhưng image chạy root — xung đột.
+
+**Ghi nhớ:** pod fail vì security context có thể hiện failing hoặc pending
+— `kubectl describe` lấy events.
+
+- [ ] Dọn dẹp: `kubectl delete -f security-context-demo.yaml`
+
+### Lab 15.7 — Requests/limits: OOMKilled → Pending → chạy (demo Phần 5)
+
+Prereq: file frontend-resources.yaml (course Git repo) — pod 2 containers:
+mysql (request 64Mi/250m, limit 128Mi/500m) + wordpress tương tự.
+
+- [ ] Chạy bản gốc:
+
+```bash
+kubectl apply -f frontend-resources.yaml
+kubectl get pods
+kubectl describe pod frontend
+```
+
+**Verify:** 1/2 container chạy; events cho thấy db container OOMKilled —
+limit 128MB không đủ.
+
+- [ ] Sửa request của db thành 64Gi, apply lại
+
+**Verify:** pod Pending; events FailedScheduling — insufficient memory.
+
+- [ ] Sửa về request 64Mi, limit 512Mi, apply lại
+
+**Verify:** pod Running.
+
+- [ ] Dọn dẹp: `kubectl delete -f frontend-resources.yaml`
+
+**Ghi nhớ:** OOMKilled = ứng dụng cần nhiều hơn limit; Pending +
+FailedScheduling = scheduler không tìm được node đủ request cho pod.
+
+### Lab 15.8 — kubectl set resources trên deployment (demo Phần 5)
+
+- [ ] Set requests + limits trong một lệnh:
+
+```bash
+kubectl set resources deploy/<tên> --requests memory=64Mi,cpu=250m \
+  --limits memory=512Mi,cpu=500m
+```
+
+**Verify:** `kubectl get deploy <tên> -o yaml | grep -A4 resources:` thấy
+cả requests và limits.
+
+**Ghi nhớ:** mẹo thi — cần set trên pod riêng lẻ: tạo deployment, `kubectl
+set`, rồi copy spec từ deployment YAML sang pod YAML.
+
+### Lab 15.9 — Security (end-of-lesson lab)
+
+- [ ] Namespace `secure` + SA `secure` + deployment `secure-deploy` dùng
+      SA đó:
+
+```bash
+kubectl create ns secure
+kubectl create sa secure -n secure
+kubectl create deploy secure-deploy --image=nginx -n secure
+kubectl set serviceaccount deploy/secure-deploy secure -n secure
+kubectl describe -n secure pod secure-<suffix>
+```
+
+**Verify:** describe pod hiện `Service Account: secure`.
+
+**Ghi nhớ:** chỉ cần gắn đúng SA cho deployment — không phải tạo role/
+rolebinding (RBAC không thuộc đề CKAD).
+
+- [ ] Dọn dẹp: `kubectl delete ns secure`

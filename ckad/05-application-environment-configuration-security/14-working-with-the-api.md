@@ -203,8 +203,6 @@ File `crdobject.yaml` (course Git repo) định nghĩa resource
 ```bash
 kubectl apply -f crdobject.yaml
 kubectl api-resources | grep backup       # resource backups đã vào API
-kubectl api-resources | grep -i custom    # thấy crd / crds
-kubectl get crds                          # mọi CRD hiện có trong cluster
 ```
 
 Dùng resource mới — file `crdbackup.yaml`: đúng apiVersion, `kind: Backup`,
@@ -244,3 +242,39 @@ kubectl get backups                       # custom resource của ta nằm trong
   third-party applications.
 
 *(Transcript ghi "Tygera" — chuẩn hóa thành Tigera.)*
+
+## Phần 7 — End-of-lesson lab — Working With the API
+
+### Đề bài
+
+Tìm mọi resource trên hệ thống đã được định nghĩa bằng custom resource
+definitions.
+
+### Lời giải
+
+```bash
+kubectl api-resources | grep -i custom
+kubectl get crds
+```
+
+- `grep -i custom` lộ resource **customresourcedefinitions** kèm shortname
+  **crd / crds** — chính là API resource dùng để tạo CRD.
+- `kubectl get crds` liệt kê **mọi CRD hiện có** trong cluster — toàn bộ
+  những gì đã được định nghĩa bằng CRD. *"Now that was easy, wasn't it?"*
+
+## Tổng hợp lệnh Bài 14
+
+| Lệnh | Chức năng |
+|---|---|
+| `kubectl api-resources` / `kubectl api-versions` | Tra resource, API group và version hiện hành của cluster |
+| `kubectl config view` | Xem cấu hình client trong `.kube/config`: cluster, users, context |
+| `kubectl config set-context --current --namespace=<ns>` | Đổi default namespace của context hiện tại — xong nhớ set về `default` |
+| `kubectl proxy --port=8001 &` + `curl http://localhost:8001/...` | Làm việc trực tiếp với API bằng curl — proxy giữ phần TLS |
+| `kubectl explain <resource> --recursive` | Soi toàn bộ child properties — đối chiếu YAML khi gặp deprecation |
+| `kubectl get crds` | Liệt kê mọi custom resource definitions trong cluster |
+
+> Từ ConfigMaps, Secrets qua DevOps deployments tới chính Kubernetes API,
+> ứng dụng giờ đã được cấu hình, triển khai và mở rộng theo chiều sâu của
+> platform. Bài 15 — **Security** — bài cuối của Module 5, khép lại miền
+> Application Environment, Configuration and Security bằng các tùy chọn
+> security cho workload trong cluster.

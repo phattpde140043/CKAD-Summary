@@ -24,6 +24,9 @@ bài được cập nhật dần khi xử lý transcript từng bài.
   API vận hành ra sao — api-resources/api-versions, `kubectl config`, curl
   qua `kubectl proxy`, API deprecations, mở rộng API bằng CRD và operators +
   end-of-lesson lab
+- [Bài 15 — Security](15-security.md): authentication & authorization,
+  service accounts, role-based access control, security context, resource
+  requests/limits và quota + end-of-lesson lab
 
 ## Labs
 
@@ -33,4 +36,5 @@ bài được cập nhật dần khi xử lý transcript từng bài.
 
 - [x] Bài 12: ConfigMaps and Secrets
 - [x] Bài 13: Deploying Applications the DevOps Way
-- [ ] Bài 14: Working With the API
+- [x] Bài 14: Working With the API
+- [x] Bài 15: Security
