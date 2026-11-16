@@ -22,6 +22,14 @@ bài được cập nhật dần khi xử lý transcript từng bài.
 
 - [Labs thực hành](labs.md) — tổng hợp toàn bộ ví dụ demo và lab exercise của module, dạng checklist kèm tiêu chí verify.
 
+## Deep dive
+
+Bổ sung kiến thức ngoài video theo template 4 lớp (Concept → YAML →
+Command → Production), bám checklist CNCF của domain:
+
+- [dd-ingress-advanced.md](dd-ingress-advanced.md) — ingressClassName,
+  defaultBackend, TLS termination
+
 ## Tiến độ
 
 - [x] Bài 10: Networking

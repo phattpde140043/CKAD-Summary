@@ -102,7 +102,23 @@ Kiểm tra bắt buộc với các mô hình dễ sai:
 - Mỗi bài một bullet: `- [Bài N — Tên](NN-file.md): <danh sách chủ đề chính> + end-of-lesson lab`.
 - Section `## Tiến độ`: checkbox từng bài — tick khi hoàn tất, bỏ marker "đang xử lý".
 
-## 8. Quy ước khác
+## 8. Deep dive (`dd-*.md`)
+
+- File `dd-*.md` trong module: kiến thức **bổ sung ngoài video** lấp gap trong
+  checklist CNCF — không tóm tắt lại nội dung video; chỗ trùng thì back-ref
+  `*(nhắc lại Bài N)*` thay vì viết lại.
+- Template 4 lớp cố định: `## ① Concept` → `## ② Configuration (YAML)` →
+  `## ③ Command (kubectl)` → `## ④ Production scenarios` → `## References`
+  (chỉ link kubernetes.io chính thức).
+- Mở đầu bằng blockquote: `> Cấp độ mục tiêu: **<Level>**. Toàn bộ nội dung
+  *(bổ sung từ nghiên cứu ngoài video)*; <nền tảng đã có ở bài nào>
+  *(nhắc lại Bài N)*.`
+- Labs deep dive: `### Lab DD.N — Tên` trong `## Deep dive labs (bổ sung ngoài
+  video)` cuối `labs.md` — cùng format lab thường (checklist + Verify + Ghi nhớ).
+- README module: section `## Deep dive` (giữa `## Labs` và `## Tiến độ`) liệt kê
+  từng file dd kèm chủ đề ngắn.
+
+## 9. Quy ước khác
 
 - Không hardcode secret thật — password trong demo là giá trị giả (vd `password`) và được
   chú thích demo-only.

@@ -247,3 +247,78 @@ ingress, curl nginxsvc.info trả trang nginx.
 **Ghi nhớ:** Service tạo trước khi viết rule; pathType mặc định của `create
 ingress` là Exact.
 
+## Deep dive labs (bổ sung ngoài video)
+
+### Lab DD.8 — Mô phỏng sự cố Ingress TLS (production incident)
+
+Prereq: minikube ingress addon đang chạy *(như Lab 11.2)*; thêm vào
+`/etc/hosts` một dòng: `<minikube-ip> shop.local bogus.local`.
+
+- [ ] Dựng ứng dụng + cert + Ingress TLS:
+
+```bash
+kubectl create deployment ddweb --image=nginx --replicas=2
+kubectl expose deployment ddweb --port=80
+openssl req -x509 -newkey rsa:2048 -nodes -days 1 \
+  -keyout tls.key -out tls.crt -subj "/CN=shop.local"
+kubectl create secret tls shop-tls --cert=tls.crt --key=tls.key
+kubectl create ingress ddshop --class=nginx \
+  --rule="shop.local/=ddweb:80,tls=shop-tls"
+kubectl get ing ddshop
+```
+
+**Verify:** PORTS hiện **80, 443**; `curl -k https://shop.local` trả
+trang chào của nginx — TLS đã terminate tại controller.
+
+- [ ] Đọc hạn cert như on-call (không cần vào controller):
+
+```bash
+kubectl get secret shop-tls -o jsonpath='{.data.tls\.crt}' \
+  | base64 -d | openssl x509 -noout -dates
+```
+
+**Verify:** notAfter = ngày mai (cert chỉ sống 1 ngày theo `-days 1`).
+
+- [ ] Sự cố "cert hết hạn" → rotate bằng Secret cùng tên:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -days 365 \
+  -keyout tls.key -out tls.crt -subj "/CN=shop.local"
+kubectl delete secret shop-tls
+kubectl create secret tls shop-tls --cert=tls.crt --key=tls.key
+```
+
+- [ ] Xác nhận controller đã nhận cert mới:
+
+```bash
+openssl s_client -connect shop.local:443 -servername shop.local \
+  </dev/null 2>/dev/null | openssl x509 -noout -dates
+```
+
+**Verify:** notAfter nhảy sang **năm sau** — ingress-nginx watch Secret
+và reload, không cần đụng vào Ingress.
+
+- [ ] Bẫy defaultBackend:
+
+```bash
+curl -k https://bogus.local
+```
+
+**Verify:** request vẫn tới controller (host có trong /etc/hosts)
+nhưng không khớp rule nào → controller trả trang lỗi mặc định của nó,
+không phải từ ddweb.
+
+- [ ] Dọn dẹp:
+
+```bash
+kubectl delete ing ddshop
+kubectl delete secret shop-tls
+kubectl delete deploy,svc ddweb
+rm tls.crt tls.key
+```
+
+Xóa dòng `shop.local bogus.local` khỏi `/etc/hosts`.
+
+**Ghi nhớ:** nghi vấn cert → decode Secret + `openssl x509 -noout
+-dates`; rotate = thay Secret cùng tên, Ingress giữ nguyên.
+

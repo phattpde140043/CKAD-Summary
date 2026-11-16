@@ -198,3 +198,89 @@ rút pod khỏi endpoints, không restart.
 
 **Ghi nhớ:** `exec` + `wget --no-check-certificate --spider` là cách
 viết probe đơn giản nhất — chạy được Linux command là viết được probe.
+
+## Deep dive labs (bổ sung ngoài video)
+
+### Lab DD.3 — Metrics & events troubleshooting
+
+Prereq: metrics-server: `minikube addons enable metrics-server`.
+
+- [ ] Xem metrics hiện tại:
+
+```bash
+kubectl top pods
+kubectl top pods --sort-by=memory
+kubectl top nodes
+```
+
+**Verify:** bảng CPU(Mi)/MEMORY của pods và nodes; pod ăn RAM nhất đứng
+đầu danh sách sau sort.
+
+- [ ] Xem events theo thứ tự thời gian:
+
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
+**Verify:** events xếp cũ → mới.
+
+- [ ] Gây lỗi rồi nhận diện:
+
+```bash
+kubectl delete deploy -n kube-system metrics-server
+kubectl top pods
+```
+
+**Verify:** `error: Metrics API not available` — gặp lỗi này là tra ngay
+`kubectl get apiservices | grep metrics`.
+
+- [ ] Khôi phục: `minikube addons enable metrics-server` lần nữa; chờ
+      1–2 phút; `kubectl top pods` chạy lại
+
+**Verify:** metrics trả về bình thường.
+
+- [ ] Dọn dẹp: giữ nguyên addon cho lab sau
+
+**Ghi nhớ:** `kubectl top` sống chết cùng metrics-server — không phải
+tính năng lõi của API server.
+
+### Lab DD.4 — kubectl debug với pod distroless
+
+- [ ] Tạo pod không có shell:
+
+```bash
+kubectl run pausepod --image=registry.k8s.io/pause
+kubectl exec -it pausepod -- sh
+```
+
+**Verify:** exec fail — `executable file not found` (image pause không
+có shell).
+
+- [ ] Mang toolbox đến pod:
+
+```bash
+kubectl debug -it pausepod --image=busybox:1.28 --target=pausepod
+```
+
+**Verify:** shell busybox mở; `ps` thấy process `/pause` của container
+gốc (process namespace sharing).
+
+- [ ] Trong shell debug: `ls /proc/<PID-của-pause>/root` — filesystem của
+      container gốc hiện ra qua `/proc`
+- [ ] Kiểm tra dấu vết:
+
+```bash
+kubectl get pod pausepod \
+  -o jsonpath='{.spec.ephemeralContainers[*].name}'
+```
+
+- [ ] Debug node: `kubectl get nodes` lấy tên; `kubectl debug node/<tên>
+      -it --image=busybox:1.28`; `chroot /host` rồi `ls`
+
+**Verify:** thấy filesystem thật của node.
+
+- [ ] Dọn dẹp: `kubectl delete pod pausepod` — cách duy nhất gỡ
+      ephemeral container
+
+**Ghi nhớ:** exec cần shell trong image; `kubectl debug` mang công cụ đến
+pod — distroless không còn là ngõ cụt.

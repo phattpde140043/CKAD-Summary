@@ -452,3 +452,70 @@ StatefulSet `my-vault` + pods + services.
 ```bash
 helm delete my-vault
 ```
+
+## Deep dive labs (bổ sung ngoài video)
+
+### Lab DD.2 — So sánh chiến lược rollout
+
+- [ ] Dựng Deployment và ép rollout "chậm rãi" để quan sát:
+
+```bash
+kubectl create deployment roll --image=nginx --replicas=4
+kubectl patch deployment roll -p \
+  '{"spec":{"minReadySeconds":30,"strategy":{"rollingUpdate":{"maxUnavailable":0,"maxSurge":2}}}}'
+kubectl set image deployment/roll nginx=nginx:1.27-alpine
+kubectl rollout status deployment/roll
+```
+
+**Verify:** trong lúc rollout, `kubectl get pods` (màn khác) không bao
+giờ xuống dưới 4 pod (maxUnavailable 0), có lúc lên 6 (maxSurge 2);
+mỗi pod mới phải "ngồi im" 30 giây (minReadySeconds) trước khi pod cũ
+bị thay — mất vài phút là bình thường.
+
+- [ ] Gắn change-cause cho từng revision:
+
+```bash
+kubectl annotate deployment roll \
+  kubernetes.io/change-cause="v2: alpine 1.27" --overwrite
+kubectl set image deployment/roll nginx=nginx:1.27
+kubectl annotate deployment roll \
+  kubernetes.io/change-cause="v3: quay về 1.27" --overwrite
+kubectl set image deployment/roll nginx=nginx:1.27-alpine
+kubectl rollout history deployment/roll
+```
+
+**Verify:** các revision mới hiện CHANGE-CAUSE rõ ràng; revision đầu
+tiên `<none>` — annotation phải có **trước** lúc revision sinh ra mới
+được sao chép vào ReplicaSet.
+
+- [ ] Rollback và xem lại lịch sử:
+
+```bash
+kubectl rollout undo deployment/roll --to-revision=2
+kubectl rollout history deployment/roll
+```
+
+**Verify:** undo **không** giảm số revision — sinh revision mới chứa
+template của revision cũ đã chọn.
+
+- [ ] So sánh Recreate (có downtime):
+
+```bash
+kubectl patch deployment roll -p \
+  '{"spec":{"strategy":{"type":"Recreate","rollingUpdate":null}}}'
+kubectl set image deployment/roll nginx=nginx:alpine
+kubectl get pods -w
+```
+
+**Verify:** có khoảnh khắc đếm pod về **0** — đủ 4 pod cũ Terminating
+hết rồi pod mới mới được tạo. Chú ý patch phải đặt `rollingUpdate:
+null`; để lại block cũ là invalid.
+
+- [ ] Dọn dẹp:
+
+```bash
+kubectl delete deployment roll
+```
+
+**Ghi nhớ:** maxUnavailable 0 + maxSurge > 0 = zero-downtime rollout;
+Recreate chấp nhận downtime để không chạy 2 phiên bản song song.

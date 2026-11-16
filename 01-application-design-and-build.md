@@ -20,6 +20,7 @@
 - [ ] Job: `completions`, `parallelism`, `backoffLimit`, `activeDeadlineSeconds`
 - [ ] CronJob: cron schedule syntax, `concurrencyPolicy`, `startingDeadlineSeconds`, `suspend`, `timeZone`
 - [ ] Decision criteria: which workload resource fits a given workload type
+- → Deep dive: [dd-jobs-cronjobs-advanced.md](ckad/02-kubernetes-essentials/dd-jobs-cronjobs-advanced.md) — backoffLimit, activeDeadlineSeconds, suspend, timeZone (GA v1.27), concurrencyPolicy
 
 ## 1.3 Multi-Container Pod Design Patterns
 

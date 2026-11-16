@@ -29,3 +29,4 @@
 - [ ] TLS termination: `tls` section + Secret of type `kubernetes.io/tls`
 - [ ] `defaultBackend` for unmatched requests
 - [ ] Routing patterns: path fan-out, name-based virtual hosting
+- → Deep dive: [dd-ingress-advanced.md](ckad/04-services-networking/dd-ingress-advanced.md) — ingressClassName, defaultBackend, TLS termination

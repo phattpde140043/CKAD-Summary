@@ -64,7 +64,9 @@ Nguồn: [CNCF curriculum](https://github.com/cncf/curriculum/tree/master/ckad) 
 
 Mỗi file chủ đề có một section cho từng competency chính thức, kèm checklist
 khái niệm then chốt. Thêm notes trực tiếp dưới mục checklist tương ứng; đánh dấu
-khi đã nắm vững.
+khi đã nắm vững. Các module trong [ckad/](ckad/) có thêm các file `dd-*.md`
+(deep dive) — kiến thức bổ sung ngoài video theo template 4 lớp (Concept → YAML
+→ Command → Production) — được liên kết ngay dưới mục checklist tương ứng.
 
 Toàn bộ notes được biên soạn theo [WRITING_GUIDELINES.md](WRITING_GUIDELINES.md) —
 quy ước ngôn ngữ, cấu trúc bài học, marker nguồn và format labs.

@@ -24,6 +24,19 @@ bài được cập nhật dần khi xử lý transcript từng bài.
 
 - [Labs thực hành](labs.md) — tổng hợp toàn bộ ví dụ demo và lab exercise của module, dạng checklist kèm tiêu chí verify.
 
+## Deep dive
+
+Bổ sung kiến thức ngoài video theo template 4 lớp (Concept → YAML →
+Command → Production), bám checklist CNCF của domain:
+
+- [dd-logs.md](dd-logs.md) — đầy đủ flags `kubectl logs` + đọc log crash
+- [dd-metrics-events-watch.md](dd-metrics-events-watch.md) — `kubectl
+  top`, events, watch
+- [dd-grpc-probes.md](dd-grpc-probes.md) — probe handler thứ tư cho app
+  gRPC
+- [dd-kubectl-debug.md](dd-kubectl-debug.md) — ephemeral containers:
+  debug distroless và node
+
 ## Tiến độ
 
 - [x] Bài 16: Troubleshooting

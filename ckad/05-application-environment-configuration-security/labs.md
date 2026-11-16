@@ -600,3 +600,103 @@ kubectl describe -n secure pod secure-<suffix>
 rolebinding (RBAC không thuộc đề CKAD).
 
 - [ ] Dọn dẹp: `kubectl delete ns secure`
+
+## Deep dive labs (bổ sung ngoài video)
+
+### Lab DD.5 — Namespace governance: ResourceQuota + LimitRange
+
+- [ ] Tạo namespace và quota:
+
+```bash
+kubectl create ns team-a
+kubectl create quota team-quota -n team-a \
+  --hard=requests.cpu=1,requests.memory=1Gi,limits.cpu=2,limits.memory=2Gi,pods=5
+```
+
+- [ ] Tạo pod không khai báo resources:
+
+```bash
+kubectl run bare --image=nginx -n team-a
+```
+
+**Verify:** pod bị từ chối ngay — Forbidden, `must specify
+requests.cpu/requests.memory`: quota compute không có căn cứ để trừ.
+
+- [ ] Apply LimitRange với default/defaultRequest (YAML trong
+      dd-resource-quota-limitrange Phần 2)
+- [ ] Tạo lại pod bare
+
+**Verify:** pod Running; `kubectl describe pod bare -n team-a` thấy
+requests/limits được inject đúng default.
+
+- [ ] Xem bảng Used/Hard: `kubectl describe quota team-quota -n team-a`
+- [ ] Dọn dẹp: `kubectl delete ns team-a`
+
+**Ghi nhớ:** ResourceQuota từ chối pod thiếu resources; LimitRange cứu
+bằng cách inject default — hai resource đi cặp nhau trong thực chiến.
+
+### Lab DD.6 — QoS classes và OOMKilled
+
+- [ ] Tạo 3 pod với 3 kiểu khai báo resources (YAML trong
+      dd-qos-classes Phần 2): guaranteed, burstable, besteffort
+- [ ] Đọc QoS class Kubernetes tự gán:
+
+```bash
+kubectl get pods -o custom-columns='NAME:.metadata.name,QOS:.status.qosClass'
+```
+
+**Verify:** 3 pod lần lượt Guaranteed / Burstable / BestEffort.
+
+- [ ] Tạo pod stress với memory limit thấp hơn nhu cầu:
+
+```bash
+kubectl run oomtest --image=polinux/stress --restart=Never \
+  --limits=memory=100Mi -- \
+  --vm 1 --vm-bytes 150M --vm-hang 1
+```
+
+- [ ] `kubectl get pod oomtest -w`
+
+**Verify:** pod chết nhanh; `kubectl describe pod oomtest` thấy Reason
+`OOMKilled`, exit code 137 — container chạm cgroup limit 100Mi, kernel
+giết process.
+
+- [ ] Dọn dẹp: `kubectl delete pod guaranteed burstable besteffort
+      oomtest`
+
+**Ghi nhớ:** OOMKilled = container chạm limit của chính nó (kernel ra
+tay); Evicted = node thiếu tài nguyên (kubelet đuổi pod) — hai cái chết
+khác nhau, hai người ra tay khác nhau.
+
+### Lab DD.7 — Secret TLS và immutable ConfigMap
+
+- [ ] Tạo self-signed cert + Secret TLS:
+
+```bash
+openssl req -x509 -newkey rsa:2048 -nodes -days 30 \
+  -keyout tls.key -out tls.crt -subj "/CN=myapp.local"
+kubectl create secret tls mytls --cert=tls.crt --key=tls.key
+kubectl get secret mytls -o yaml
+```
+
+**Verify:** Secret type `kubernetes.io/tls`, chỉ 2 key `tls.crt` +
+`tls.key` (giá trị base64).
+
+- [ ] Bật immutable cho ConfigMap đang chạy rồi thử sửa:
+
+```bash
+kubectl create cm frozen --from-literal LOG_LEVEL=info
+kubectl patch cm frozen -p '{"immutable":true}'
+kubectl patch cm frozen -p '{"data":{"LOG_LEVEL":"debug"}}'
+```
+
+**Verify:** patch thứ hai thành công (cửa một chiều cho phép bật); patch
+thứ ba bị từ chối — `data: Forbidden: field is immutable when immutable
+is set`.
+
+- [ ] Chỉ còn một đường thay đổi: `kubectl delete cm frozen` rồi create
+      lại với giá trị mới
+- [ ] Dọn dẹp: `kubectl delete secret mytls; rm tls.crt tls.key`
+
+**Ghi nhớ:** `kubectl create secret tls` sinh sẵn `type: tls` — Ingress
+TLS đòi đúng type này; immutable bật được sau tạo nhưng không tắt được.

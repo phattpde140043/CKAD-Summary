@@ -15,6 +15,7 @@
 - [ ] `revisionHistoryLimit`; documenting changes with the `kubernetes.io/change-cause` annotation
 - [ ] `minReadySeconds` and `progressDeadlineSeconds`
 - [ ] `kubectl set image` and editing live specs
+- → Deep dive: [dd-deployment-strategies-and-rollout.md](ckad/03-application-deployment/dd-deployment-strategies-and-rollout.md) — Recreate vs RollingUpdate, maxSurge/maxUnavailable, minReadySeconds, progressDeadlineSeconds, change-cause
 
 ## 2.3 Helm — Deploy Existing Packages
 

@@ -22,6 +22,7 @@
 - [ ] Namespace governance: `ResourceQuota` for compute (requests/limits) and object counts
 - [ ] `LimitRange`: default / min / max per container or Pod
 - [ ] Quota scoping and enforcement behavior when exceeded
+- → Deep dive: [dd-resource-quota-limitrange.md](ckad/05-application-environment-configuration-security/dd-resource-quota-limitrange.md) — ResourceQuota + LimitRange: three defense layers for a namespace
 
 ## 4.4 ConfigMaps
 
@@ -37,6 +38,7 @@
 - [ ] `requests` drive scheduling fit; `limits` cap runtime usage
 - [ ] Exceeding limits: CPU throttled, memory → `OOMKilled`
 - [ ] QoS classes: `Guaranteed`, `Burstable`, `BestEffort`; eviction order under node pressure
+- → Deep dive: [dd-qos-classes.md](ckad/05-application-environment-configuration-security/dd-qos-classes.md) — Guaranteed/Burstable/BestEffort; OOMKilled vs Evicted
 
 ## 4.6 Create and Consume Secrets
 
@@ -45,6 +47,7 @@
 - [ ] Consume: `env` + `secretKeyRef`, `envFrom`, volume mounts
 - [ ] `imagePullSecrets` on Pods and ServiceAccounts
 - [ ] `immutable: true`; TLS Secrets for Ingress → [topic 5](05-services-and-networking.md)
+- → Deep dive: [dd-configmap-secret-advanced.md](ckad/05-application-environment-configuration-security/dd-configmap-secret-advanced.md) — immutable, `type: tls`, `stringData` write-only
 
 ## 4.7 ServiceAccounts
 

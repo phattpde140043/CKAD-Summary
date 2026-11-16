@@ -198,3 +198,72 @@ thực hành kèm tiêu chí verify. Mục tiêu: làm tới khi không cần nh
 - [ ] `kubectl cp /etc/hosts lab7pod:/data`
 - [ ] Verify cuối: `kubectl describe pv lab7pv` → hostPath `/storage`; `minikube ssh` → `ls -l /storage` — **Verify:** thấy file `hosts` — proof lab hoàn thành
 - Ghi nhớ: access mode là **khai báo**, không đảm bảo năng lực thật của storage — hostPath không share được giữa nhiều node; RWX ở lab này chạy được vì Minikube chỉ có 1 node *(bổ sung từ nghiên cứu ngoài video)*
+
+## Deep dive labs (bổ sung ngoài video)
+
+### Lab DD.1 — Job failure & retry
+
+- [ ] Tạo Job fail lập tức và quan sát retry:
+
+```bash
+kubectl create job failjob --image=busybox -- false
+kubectl get jobs,pods -w
+```
+
+**Verify:** pod `failjob-<suffix>` Failed với exit code 1; sau ~10s,
+20s, 40s... pod **mới** với suffix khác lần lượt xuất hiện và cũng
+Failed — đó là backoff của backoffLimit (mặc định 6).
+
+- [ ] Xem Job chịu thua:
+
+```bash
+kubectl describe job failjob
+kubectl get pods -l job-name=failjob
+```
+
+**Verify:** Events hiện `BackoffLimitExceeded` — "Job has reached the
+specified backoff limit"; tổng số pod Failed nhiều hơn 1 (lần đầu +
+các retry).
+
+- [ ] `activeDeadlineSeconds` chấm dứt Job treo:
+
+```bash
+kubectl create job slowjob --image=busybox --dry-run=client -o yaml \
+  -- sleep 300 > slowjob.yaml
+```
+
+Sửa `slowjob.yaml`: thêm `activeDeadlineSeconds: 30` vào `spec` của
+Job (top-level, cạnh `template`) — cùng vị trí như Lab 6.8 — rồi:
+
+```bash
+kubectl apply -f slowjob.yaml
+kubectl get job slowjob
+```
+
+**Verify:** Job **FAILED** sau đúng ~30 giây; `kubectl describe job
+slowjob` → Conditions: Failed True, Reason: `DeadlineExceeded`; pod bị
+Terminating trước khi `sleep 300` chạy xong.
+
+- [ ] Đóng băng CronJob:
+
+```bash
+kubectl create cronjob ticker --image=busybox \
+  --schedule="* * * * *" -- echo tick
+kubectl get jobs -w                     # Job mới mỗi phút
+kubectl patch cronjob ticker -p '{"spec":{"suspend":true}}'
+kubectl get cronjob ticker
+```
+
+**Verify:** cột SUSPEND = **true**; các phút sau đó không còn Job mới
+sinh ra.
+
+- [ ] Dọn dẹp:
+
+```bash
+kubectl delete job failjob slowjob
+kubectl delete cronjob ticker
+```
+
+**Ghi nhớ:** pod fail ≠ Job fail ngay — backoffLimit cho Job nhiều cơ
+hội thử lại; muốn Job chết đúng hẹn thì activeDeadlineSeconds, muốn
+nghỉ ngơi thì suspend.

@@ -16,6 +16,7 @@
 - [ ] Startup probe: grace period for slow-start apps; defers liveness/readiness
 - [ ] Handlers: `httpGet`, `tcpSocket`, `exec`, `grpc`
 - [ ] Tuning knobs: `initialDelaySeconds`, `periodSeconds`, `timeoutSeconds`, `failureThreshold`, `successThreshold`
+- → Deep dive: [dd-grpc-probes.md](ckad/06-observability-maintenance/dd-grpc-probes.md) — the fourth probe handler for gRPC apps
 
 ## 3.3 Monitor Applications with Built-in CLI Tools
 
@@ -23,12 +24,14 @@
 - [ ] `kubectl get --watch`, output formats and field selection
 - [ ] `kubectl describe`: conditions and events in one view
 - [ ] `kubectl get events --sort-by=.lastTimestamp`, `--field-selector`
+- → Deep dive: [dd-metrics-events-watch.md](ckad/06-observability-maintenance/dd-metrics-events-watch.md) — `kubectl top`, events, watch in depth
 
 ## 3.4 Utilize Container Logs
 
 - [ ] `kubectl logs` flags: `-f`, `--tail`, `--since`, `--timestamps`, `-p` (previous instance)
 - [ ] Multi-container Pods: `-c <container>`; init container and sidecar logs
 - [ ] Cluster-level logging flow: node agent shipping logs to a backend (concept)
+- → Deep dive: [dd-logs.md](ckad/06-observability-maintenance/dd-logs.md) — full `kubectl logs` flag reference, reading crash logs
 
 ## 3.5 Debugging in Kubernetes
 
@@ -37,3 +40,4 @@
 - [ ] `kubectl exec` into running containers
 - [ ] `kubectl debug`: ephemeral containers, Pod-copy debugging, node debugging profiles
 - [ ] Service/endpoints connectivity debugging → [topic 5](05-services-and-networking.md)
+- → Deep dive: [dd-kubectl-debug.md](ckad/06-observability-maintenance/dd-kubectl-debug.md) — ephemeral containers: debugging distroless pods and nodes

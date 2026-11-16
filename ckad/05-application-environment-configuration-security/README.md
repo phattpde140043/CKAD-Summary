@@ -32,6 +32,18 @@ bài được cập nhật dần khi xử lý transcript từng bài.
 
 - [Labs thực hành](labs.md) — tổng hợp toàn bộ ví dụ demo và lab exercise của module, dạng checklist kèm tiêu chí verify.
 
+## Deep dive
+
+Bổ sung kiến thức ngoài video theo template 4 lớp (Concept → YAML →
+Command → Production), bám checklist CNCF của domain:
+
+- [dd-resource-quota-limitrange.md](dd-resource-quota-limitrange.md) —
+  ResourceQuota + LimitRange: 3 lớp phòng thủ cho namespace
+- [dd-configmap-secret-advanced.md](dd-configmap-secret-advanced.md) —
+  immutable, `type: tls`, `stringData`
+- [dd-qos-classes.md](dd-qos-classes.md) — Guaranteed/Burstable/
+  BestEffort, OOMKilled vs Evicted
+
 ## Tiến độ
 
 - [x] Bài 12: ConfigMaps and Secrets
